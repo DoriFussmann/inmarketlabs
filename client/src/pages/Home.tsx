@@ -16,7 +16,6 @@ import {
   Linkedin,
   Menu,
   MonitorDot,
-  Palette,
   Plug,
   Radar,
   Sparkles,
@@ -32,68 +31,15 @@ import { toast } from "sonner";
 const BOOKING_URL = "https://calendar.app.google/JcybaC5Sakrmxbb2A";
 const BOOKING_STATUS = "Verify calendar URL";
 
-type PaletteKey = "civic" | "first" | "media" | "daylight" | "night" | "field";
 type LogoKey = "orbit" | "window" | "monogram";
 
-const paletteOptions: { id: PaletteKey; name: string; note: string; swatches: string[] }[] = [
-  { id: "civic", name: "Civic Modern", note: "Powerful · structured · optimistic", swatches: ["#667178", "#20c997", "#ff7458"] },
-  { id: "first", name: "First Signal", note: "Anticipatory · human · decisive", swatches: ["#071522", "#ff5d45", "#5aa8ff"] },
-  { id: "media", name: "Media Desk", note: "Direct · accountable · modern", swatches: ["#f7f7f3", "#ff4f35", "#1769ff"] },
-  { id: "daylight", name: "Daylight Lab", note: "Bright · clear · optimistic", swatches: ["#f8fbf6", "#155eef", "#ff6638"] },
-  { id: "night", name: "Night Signal", note: "Technical · premium · focused", swatches: ["#050d19", "#2452ed", "#ffb43b"] },
-  { id: "field", name: "Field Study", note: "Human · bold · distinctive", swatches: ["#12261f", "#b9ed3a", "#ef6155"] },
-];
-
-const heroDirections: Record<PaletteKey, { eyebrow: string; lead: string; accent: string; body: string; image: string }> = {
-  civic: {
-    eyebrow: "The first signal advantage",
-    lead: "Be there when intent begins.",
-    accent: "Before the market gets crowded.",
-    body: "In Market Lab brings enterprise-level audience intelligence and activation to emerging and growing brands. We combine people actively showing intent with propensity-based audiences, then reach them through email, LinkedIn, website visitor identification, and paid media.",
-    image: "/manus-storage/hero-civic-static_f2b296e9.jpg",
-  },
-  first: {
-    eyebrow: "The first signal advantage",
-    lead: "Be there when intent begins.",
-    accent: "Before the market gets crowded.",
-    body: "In Market Lab brings enterprise-level audience intelligence and activation to emerging and growing brands. We combine people actively showing intent with propensity-based audiences, then reach them through email, LinkedIn, website visitor identification, and paid media.",
-    image: "/manus-storage/hero-first-signal_256308c7.jpg",
-  },
-  media: {
-    eyebrow: "High-intent media execution",
-    lead: "Your media budget should buy media.",
-    accent: "Not agency markup.",
-    body: "In Market Lab is a flat-rate media execution agency built around fresher intent data, nightly audience updates, hands-on buying, and reporting you can see in real time.",
-    image: "/manus-storage/hero-signal_2378345d.jpg",
-  },
-  daylight: {
-    eyebrow: "Audience intelligence + activation",
-    lead: "Know where demand is moving.",
-    accent: "Move with it.",
-    body: "In Market Lab helps emerging brands find, understand, and reach qualified buyers sooner—combining market intelligence with coordinated media execution.",
-    image: "/manus-storage/hero-signal_2378345d.jpg",
-  },
-  night: {
-    eyebrow: "Signal-led growth",
-    lead: "See the market forming.",
-    accent: "Act before it is obvious.",
-    body: "Find the buyers, markets, and moments beginning to move—then turn that early context into precise, coordinated media action.",
-    image: "/manus-storage/hero-signal_2378345d.jpg",
-  },
-  field: {
-    eyebrow: "Demand in the wild",
-    lead: "Real buyers leave clues.",
-    accent: "We turn them into action.",
-    body: "In Market Lab follows live buying signals, prioritizes current demand, and gives your media team a sharper place to start every day.",
-    image: "/manus-storage/hero-signal_2378345d.jpg",
-  },
+const hero = {
+  eyebrow: "The first signal advantage",
+  lead: "Be there when intent begins.",
+  accent: "Before the market gets crowded.",
+  body: "In Market Lab brings enterprise-level audience intelligence and activation to emerging and growing brands. We combine people actively showing intent with propensity-based audiences, then reach them through email, LinkedIn, website visitor identification, and paid media.",
+  image: "/manus-storage/hero-civic-static_f2b296e9.jpg",
 };
-
-const logoOptions: { id: LogoKey; name: string; note: string }[] = [
-  { id: "orbit", name: "Signal Orbit", note: "Signals moving through a market" },
-  { id: "window", name: "Market Window", note: "Finding the active opportunity" },
-  { id: "monogram", name: "IML Monogram", note: "A compact institutional mark" },
-];
 
 const capabilities = [
   {
@@ -188,9 +134,9 @@ const faqs = [
   },
 ];
 
-function BrandMark({ variant, preview = false }: { variant: LogoKey; preview?: boolean }) {
+function BrandMark({ variant }: { variant: LogoKey }) {
   return (
-    <span className={`brand-mark ${preview ? "brand-mark-preview" : ""}`} aria-hidden="true">
+    <span className="brand-mark" aria-hidden="true">
       {variant === "orbit" && (
         <svg viewBox="0 0 40 40" fill="none" className="size-full">
           <circle cx="20" cy="20" r="11.25" stroke="currentColor" strokeWidth="1.4" strokeDasharray="25 8" />
@@ -252,10 +198,6 @@ function ComingSoonButton({ children, variant = "primary" }: { children: React.R
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
-  const [palette, setPalette] = useState<PaletteKey>("civic");
-  const [logo, setLogo] = useState<LogoKey>("orbit");
-  const [brandPanelOpen, setBrandPanelOpen] = useState(() => typeof window !== "undefined" && window.innerWidth >= 1024);
-  const hero = heroDirections[palette];
 
   const navItems = [
     ["Model", "#method"],
@@ -265,53 +207,10 @@ export default function Home() {
   ];
 
   return (
-    <div id="top" className={`site-shell palette-${palette} min-h-screen overflow-x-hidden`}>
-      <aside className={`brand-lab ${brandPanelOpen ? "brand-lab-open" : ""}`} aria-label="Brand direction controls">
-        <button
-          className="brand-lab-toggle"
-          type="button"
-          aria-expanded={brandPanelOpen}
-          onClick={() => setBrandPanelOpen((value) => !value)}
-        >
-          {brandPanelOpen ? <X className="size-4" /> : <Palette className="size-4" />}
-          <span>{brandPanelOpen ? "Close" : "Brand options"}</span>
-        </button>
-        {brandPanelOpen && (
-          <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} className="brand-lab-panel">
-            <div>
-              <p className="brand-lab-kicker">6 creative directions</p>
-              <div className="mt-3 space-y-2">
-                {paletteOptions.map((option, index) => (
-                  <button key={option.id} className={`brand-option ${palette === option.id ? "active" : ""}`} type="button" onClick={() => setPalette(option.id)}>
-                    <span className="flex gap-1.5">
-                      {option.swatches.map((swatch) => <span key={swatch} className="size-3 rounded-full border border-black/10" style={{ background: swatch }} />)}
-                    </span>
-                    <span className="min-w-0 text-left">
-                      <span className="block font-display text-xs"><span className="mr-1.5 font-mono text-[8px] opacity-40">0{index + 1}</span>{option.name}</span>
-                      <span className="mt-0.5 block text-[10px] opacity-55">{option.note}</span>
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="mt-5 border-t border-current/10 pt-5">
-              <p className="brand-lab-kicker">Logo concepts</p>
-              <div className="mt-3 grid grid-cols-3 gap-2">
-                {logoOptions.map((option) => (
-                  <button key={option.id} className={`logo-option ${logo === option.id ? "active" : ""}`} type="button" onClick={() => setLogo(option.id)} title={`${option.name}: ${option.note}`}>
-                    <BrandMark variant={option.id} preview />
-                    <span>{option.name.split(" ")[0]}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </aside>
-
+    <div id="top" className="site-shell palette-civic min-h-screen overflow-x-hidden">
       <header className="site-header fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl">
         <div className="container flex h-[76px] items-center justify-between">
-          <Logo variant={logo} />
+          <Logo />
           <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary navigation">
             {navItems.map(([label, href]) => (
               <a key={href} href={href} className="nav-link">
@@ -360,7 +259,7 @@ export default function Home() {
         <section className="hero-section relative flex min-h-[900px] items-end overflow-hidden pt-[120px] lg:min-h-[840px] lg:items-center">
           <img
             src={hero.image}
-            alt={palette === "civic" ? "Modern slate colonnade carrying Riviera green market signals" : palette === "first" ? "City intersections revealing early market demand signals" : "Abstract market signals flowing through a dark data landscape"}
+            alt="Modern slate colonnade carrying Riviera green market signals"
             className="absolute inset-0 size-full object-cover object-[65%_center]"
           />
           <div className="hero-vignette absolute inset-0" />
@@ -729,7 +628,7 @@ export default function Home() {
         <div className="container">
           <div className="grid gap-10 border-b border-white/10 pb-10 md:grid-cols-[1fr_auto] md:items-start">
             <div>
-              <Logo variant={logo} />
+              <Logo />
               <p className="mt-5 max-w-sm text-sm leading-6 text-white/45">Flat-rate media execution powered by current buying signals, nightly audience updates, and real-time reporting.</p>
             </div>
             <div className="grid grid-cols-2 gap-x-14 gap-y-3 text-sm text-white/58">
