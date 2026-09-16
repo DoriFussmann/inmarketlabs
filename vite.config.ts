@@ -149,15 +149,32 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
+const STORAGE_MIME_TYPES: Record<string, string> = {
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+};
+
 function vitePluginStorageProxy(): Plugin {
   return {
     name: "manus-storage-proxy",
     configureServer(server: ViteDevServer) {
-      server.middlewares.use("/manus-storage", async (req, res) => {
-        const key = req.url?.replace(/^\//, "");
-        if (!key) {
+      server.middlewares.use("/manus-storage", async (req, res, next) => {
+        const key = path.posix.normalize(req.url?.split("?")[0] ?? "").replace(/^\/+/, "");
+        if (!key || key.includes("..")) {
           res.writeHead(400, { "Content-Type": "text/plain" });
           res.end("Missing storage key");
+          return;
+        }
+
+        const localPath = path.join(PROJECT_ROOT, "client", "public", "manus-storage", key);
+        if (fs.existsSync(localPath) && fs.statSync(localPath).isFile()) {
+          const type = STORAGE_MIME_TYPES[path.extname(localPath).toLowerCase()] ?? "application/octet-stream";
+          res.writeHead(200, { "Content-Type": type, "Cache-Control": "public, max-age=31536000, immutable" });
+          fs.createReadStream(localPath).pipe(res);
           return;
         }
 
@@ -165,9 +182,7 @@ function vitePluginStorageProxy(): Plugin {
         const forgeKey = process.env.BUILT_IN_FORGE_API_KEY;
 
         if (!forgeBaseUrl || !forgeKey) {
-          res.writeHead(500, { "Content-Type": "text/plain" });
-          res.end("Storage proxy not configured");
-          return;
+          return next();
         }
 
         try {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -34,12 +34,110 @@ const BOOKING_STATUS = "Verify calendar URL";
 type LogoKey = "orbit" | "window" | "monogram";
 
 const hero = {
-  eyebrow: "The first signal advantage",
-  lead: "Be there when intent begins.",
-  accent: "Before the market gets crowded.",
-  body: "In Market Lab brings enterprise-level audience intelligence and activation to emerging and growing brands. We combine people actively showing intent with propensity-based audiences, then reach them through email, LinkedIn, website visitor identification, and paid media.",
-  image: "/manus-storage/hero-civic-static_f2b296e9.jpg",
+  eyebrow: "Audience intelligence + activation",
+  lead: "Know where demand is moving.",
+  body: "In Market Lab helps emerging brands find, understand, and reach qualified buyers sooner—combining market intelligence with coordinated media execution.",
+  image: "/manus-storage/hero-signal_2378345d.jpg",
 };
+
+const HERO_WORD_SETS = {
+  default: [
+    { word: "intent", color: "#155eef" },
+    { word: "timing", color: "#2478ff" },
+    { word: "precision", color: "#12998c" },
+    { word: "confidence", color: "#ff6638" },
+  ],
+  alternate: [
+    { word: "conversations", color: "#3d6ef5" },
+    { word: "meetings", color: "#1a8f9c" },
+    { word: "pipeline", color: "#ff7d42" },
+    { word: "revenue", color: "#d9482b" },
+  ],
+} as const;
+
+type HeroWordMode = keyof typeof HERO_WORD_SETS;
+
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setReduced(media.matches);
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
+  return reduced;
+}
+
+function HeroTypedWord({
+  mode,
+  reducedMotion,
+  onWord,
+}: {
+  mode: HeroWordMode;
+  reducedMotion: boolean;
+  onWord?: (word: string) => void;
+}) {
+  const words = HERO_WORD_SETS[mode];
+  const [index, setIndex] = useState(0);
+  const [count, setCount] = useState(reducedMotion ? words[0].word.length : 0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    setIndex(0);
+    setDeleting(false);
+    setCount(reducedMotion ? HERO_WORD_SETS[mode][0].word.length : 0);
+  }, [mode, reducedMotion]);
+
+  useEffect(() => {
+    onWord?.(HERO_WORD_SETS[mode][index].word);
+  }, [index, mode, onWord]);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    const current = HERO_WORD_SETS[mode][index].word;
+    const atEnd = !deleting && count === current.length;
+    const atStart = deleting && count === 0;
+    const delay = atEnd ? 1900 : atStart ? 280 : deleting ? 40 : 72;
+
+    const timeout = window.setTimeout(() => {
+      if (atEnd) {
+        setDeleting(true);
+        return;
+      }
+      if (atStart) {
+        setIndex((value) => (value + 1) % HERO_WORD_SETS[mode].length);
+        setDeleting(false);
+        return;
+      }
+      setCount((value) => value + (deleting ? -1 : 1));
+    }, delay);
+
+    return () => window.clearTimeout(timeout);
+  }, [count, deleting, index, mode, reducedMotion]);
+
+  const current = words[index];
+  const sizer = words.reduce((longest, item) => (item.word.length > longest.length ? item.word : longest), "");
+
+  return (
+    <span className="hero-typed-word">
+      <span className="hero-typed-word-sizer" aria-hidden="true">
+        {sizer}.
+      </span>
+      <span className="hero-typed-word-live">
+        <span style={{ color: current.color }}>
+          {current.word.slice(0, count)}
+          {!reducedMotion && <span className="hero-typed-caret" aria-hidden="true" />}
+        </span>
+        .
+      </span>
+    </span>
+  );
+}
 
 const capabilities = [
   {
@@ -198,6 +296,11 @@ function ComingSoonButton({ children, variant = "primary" }: { children: React.R
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+  const [alternateHero, setAlternateHero] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const heroMode: HeroWordMode = alternateHero ? "alternate" : "default";
+  const heroPrefix = alternateHero ? "Turn intent into" : "Move with";
+  const [announcedWord, setAnnouncedWord] = useState(HERO_WORD_SETS.default[0].word);
 
   const navItems = [
     ["Model", "#method"],
@@ -207,7 +310,7 @@ export default function Home() {
   ];
 
   return (
-    <div id="top" className="site-shell palette-civic min-h-screen overflow-x-hidden">
+    <div id="top" className="site-shell palette-daylight min-h-screen overflow-x-hidden">
       <header className="site-header fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl">
         <div className="container flex h-[76px] items-center justify-between">
           <Logo />
@@ -256,24 +359,33 @@ export default function Home() {
       </header>
 
       <main>
-        <section className="hero-section relative flex min-h-[900px] items-end overflow-hidden pt-[120px] lg:min-h-[840px] lg:items-center">
+        <section className="hero-section relative flex min-h-[900px] flex-col overflow-hidden pt-[120px] lg:min-h-[920px]">
           <img
             src={hero.image}
-            alt="Modern slate colonnade carrying Riviera green market signals"
+            alt="A clear, sunlit view of market activity forming before it becomes crowded"
             className="absolute inset-0 size-full object-cover object-[65%_center]"
           />
           <div className="hero-vignette absolute inset-0" />
           <div className="hero-grid absolute inset-0 opacity-25" />
-          <div className="container relative z-10 grid items-end gap-14 pb-16 lg:grid-cols-[minmax(0,1.25fr)_380px] lg:items-center lg:pb-0">
+          <div className="container relative z-10 grid flex-1 items-end gap-14 pb-16 lg:grid-cols-[minmax(0,1.25fr)_380px] lg:items-center lg:pb-12">
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="max-w-4xl"
+              className="hero-copy max-w-4xl"
             >
               <div className="eyebrow mb-7"><span className="pulse-dot" /> {hero.eyebrow}</div>
               <h1 className="hero-title">
-                {hero.lead} <span className="text-gradient">{hero.accent}</span>
+                <span className="sr-only">
+                  {hero.lead} {heroPrefix} {announcedWord}.
+                </span>
+                <span aria-hidden="true">
+                  <span className="hero-title-line">{hero.lead}</span>
+                  <span className="hero-title-line">
+                    {heroPrefix}{" "}
+                    <HeroTypedWord mode={heroMode} reducedMotion={reducedMotion} onWord={setAnnouncedWord} />
+                  </span>
+                </span>
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-8 text-white/68 md:text-xl">
                 {hero.body}
@@ -285,7 +397,6 @@ export default function Home() {
                 <a className="button button-ghost" href="#capabilities">
                   See the model <ChevronDown className="size-4" />
                 </a>
-                <span className="calendar-verify self-center font-mono text-[9px] uppercase tracking-[0.14em]">Calendar URL · Verify</span>
               </div>
             </motion.div>
 
@@ -322,14 +433,38 @@ export default function Home() {
               </div>
             </motion.aside>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 hidden border-t border-white/10 bg-[rgba(5,13,25,0.55)] backdrop-blur-md lg:block">
+          <div className="hero-stats relative z-10 hidden border-t border-white/10 bg-[rgba(5,13,25,0.55)] backdrop-blur-md lg:block">
             <div className="container grid grid-cols-4 divide-x divide-white/10">
-              {["Flat-rate fee", "0% media markup", "Lists updated nightly", "Real-time reporting"].map((item, index) => (
-                <div key={item} className="flex items-center gap-3 py-5 pl-5 first:pl-0">
-                  <span className="font-mono text-[9px] text-[var(--electric)]">0{index + 1}</span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">{item}</span>
-                </div>
-              ))}
+              {["Flat-rate fee", "0% media markup", "Lists updated nightly", "Real-time reporting"].map((item, index) => {
+                const contents = (
+                  <>
+                    <span className="font-mono text-[9px] text-[var(--electric)]">0{index + 1}</span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">{item}</span>
+                  </>
+                );
+
+                if (index === 3) {
+                  return (
+                    <button
+                      key={item}
+                      type="button"
+                      className="hero-secret-toggle flex items-center gap-3 py-5 pl-5 first:pl-0"
+                      aria-pressed={alternateHero}
+                      aria-label={alternateHero ? "Show original hero headline" : "Show alternate hero headline"}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => setAlternateHero((value) => !value)}
+                    >
+                      {contents}
+                    </button>
+                  );
+                }
+
+                return (
+                  <div key={item} className="flex items-center gap-3 py-5 pl-5 first:pl-0">
+                    {contents}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -476,7 +611,7 @@ export default function Home() {
             <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
               <div>
                 <div className="section-label text-[var(--electric)]">Built for ambitious media teams</div>
-                <h2 className="section-title mt-6 max-w-3xl text-white">For brands that need execution—not another agency layer.</h2>
+                <h2 className="section-title mt-6 max-w-3xl text-white">For brands that need execution - not another agency layer.</h2>
               </div>
               <p className="max-w-sm text-sm leading-6 text-white/48">Designed for growth-stage brands, franchise systems, multi-location operators, and lean in-house marketing teams.</p>
             </div>
