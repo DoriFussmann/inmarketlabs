@@ -1,49 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { AlertCircle, Home } from "lucide-react";
-import { useLocation } from "wouter";
+import { useEffect } from "react";
+import { Link } from "wouter";
 
 export default function NotFound() {
-  const [, setLocation] = useLocation();
-
-  const handleGoHome = () => {
-    setLocation("/");
-  };
+  useEffect(() => {
+    document.title = "Page not found | InMarketLab";
+  }, []);
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[var(--paper)]">
-      <Card className="w-full max-w-lg mx-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-        <CardContent className="pt-8 pb-8 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-red-100 rounded-full animate-pulse" />
-              <AlertCircle className="relative h-16 w-16 text-red-500" />
-            </div>
-          </div>
-
-          <h1 className="text-4xl font-light text-[var(--ink)] mb-2">404</h1>
-
-          <h2 className="text-xl font-normal text-[var(--ink)]/80 mb-4">
-            Page Not Found
-          </h2>
-
-          <p className="text-[var(--ink)]/60 mb-8 leading-relaxed">
-            Sorry, the page you are looking for doesn't exist.
-            <br />
-            It may have been moved or deleted.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              onClick={handleGoHome}
-              className="bg-[var(--cobalt)] hover:bg-[var(--electric)] text-white px-6 py-2.5 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Go Home
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="site-shell palette-daylight surface-paper flex min-h-screen items-center justify-center">
+      <div className="container max-w-xl py-24 text-center">
+        <div className="section-label justify-center text-[var(--cobalt)]">404</div>
+        <h1 className="section-title mt-6">Page not found.</h1>
+        <p className="mt-6 text-base leading-7 text-[var(--ink)]/62">The page you're looking for doesn't exist.</p>
+        <div className="mt-10">
+          <Link href="/" className="button button-primary">
+            Back to home
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

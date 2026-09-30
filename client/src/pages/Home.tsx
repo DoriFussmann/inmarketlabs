@@ -1,61 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   BarChart3,
-  BookOpen,
   ChevronDown,
   Compass,
   Crosshair,
   Database,
-  Download,
-  FileChartColumn,
-  FileText,
-  Globe2,
-  LayoutDashboard,
-  Linkedin,
   Menu,
-  MonitorDot,
-  Plug,
   Radar,
   Sparkles,
   Target,
-  Users,
-  Video,
   X,
   Zap,
 } from "lucide-react";
-import { toast } from "sonner";
+import SiteFooter, { navItems } from "@/components/SiteFooter";
+import { Logo } from "@/components/Brand";
 
-// VERIFY: Replace with Jay's confirmed calendar URL when provided.
 const BOOKING_URL = "https://calendar.app.google/JcybaC5Sakrmxbb2A";
-const BOOKING_STATUS = "Verify calendar URL";
-
-type LogoKey = "orbit" | "window" | "monogram";
 
 const hero = {
   eyebrow: "Audience intelligence + activation",
   lead: "Know where demand is moving.",
-  body: "In Market Lab helps emerging brands find, understand, and reach qualified buyers sooner—combining market intelligence with coordinated media execution.",
-  image: "/manus-storage/hero-signal_2378345d.jpg",
+  body: "InMarketLab helps emerging brands find, understand, and reach qualified buyers sooner—combining market intelligence with coordinated media execution.",
+  image: "/images/hero.webp",
 };
 
-const HERO_WORD_SETS = {
-  default: [
-    { word: "intent", color: "#155eef" },
-    { word: "timing", color: "#2478ff" },
-    { word: "precision", color: "#12998c" },
-    { word: "confidence", color: "#ff6638" },
-  ],
-  alternate: [
-    { word: "conversations", color: "#3d6ef5" },
-    { word: "meetings", color: "#1a8f9c" },
-    { word: "pipeline", color: "#ff7d42" },
-    { word: "revenue", color: "#d9482b" },
-  ],
-} as const;
+const HERO_WORDS = [
+  { word: "intent", color: "#155eef" },
+  { word: "timing", color: "#2478ff" },
+  { word: "precision", color: "#12998c" },
+  { word: "confidence", color: "#ff6638" },
+] as const;
 
-type HeroWordMode = keyof typeof HERO_WORD_SETS;
+const heroPrefix = "Move with";
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(
@@ -73,33 +51,30 @@ function useReducedMotion() {
 }
 
 function HeroTypedWord({
-  mode,
   reducedMotion,
   onWord,
 }: {
-  mode: HeroWordMode;
   reducedMotion: boolean;
   onWord?: (word: string) => void;
 }) {
-  const words = HERO_WORD_SETS[mode];
   const [index, setIndex] = useState(0);
-  const [count, setCount] = useState(reducedMotion ? words[0].word.length : 0);
+  const [count, setCount] = useState(reducedMotion ? HERO_WORDS[0].word.length : 0);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     setIndex(0);
     setDeleting(false);
-    setCount(reducedMotion ? HERO_WORD_SETS[mode][0].word.length : 0);
-  }, [mode, reducedMotion]);
+    setCount(reducedMotion ? HERO_WORDS[0].word.length : 0);
+  }, [reducedMotion]);
 
   useEffect(() => {
-    onWord?.(HERO_WORD_SETS[mode][index].word);
-  }, [index, mode, onWord]);
+    onWord?.(HERO_WORDS[index].word);
+  }, [index, onWord]);
 
   useEffect(() => {
     if (reducedMotion) return;
 
-    const current = HERO_WORD_SETS[mode][index].word;
+    const current = HERO_WORDS[index].word;
     const atEnd = !deleting && count === current.length;
     const atStart = deleting && count === 0;
     const delay = atEnd ? 1900 : atStart ? 280 : deleting ? 40 : 72;
@@ -110,7 +85,7 @@ function HeroTypedWord({
         return;
       }
       if (atStart) {
-        setIndex((value) => (value + 1) % HERO_WORD_SETS[mode].length);
+        setIndex((value) => (value + 1) % HERO_WORDS.length);
         setDeleting(false);
         return;
       }
@@ -118,10 +93,10 @@ function HeroTypedWord({
     }, delay);
 
     return () => window.clearTimeout(timeout);
-  }, [count, deleting, index, mode, reducedMotion]);
+  }, [count, deleting, index, reducedMotion]);
 
-  const current = words[index];
-  const sizer = words.reduce((longest, item) => (item.word.length > longest.length ? item.word : longest), "");
+  const current = HERO_WORDS[index];
+  const sizer = HERO_WORDS.reduce((longest, item) => (item.word.length > longest.length ? item.word : longest), "");
 
   return (
     <span className="hero-typed-word">
@@ -169,43 +144,27 @@ const capabilities = [
   },
 ];
 
-const materials = [
-  { icon: FileText, type: "One-sheet", title: "In Market Lab overview", description: "A concise view of the operating model, audience intelligence, channels, and engagement structure." },
-  { icon: FileChartColumn, type: "Deck", title: "Audience intelligence + activation", description: "A presentation-ready explanation of how intent, propensity, activation, and measurement connect." },
-  { icon: BookOpen, type: "Methodology", title: "The First Signal methodology", description: "How buying signals are organized, refreshed, prioritized, activated, and reviewed." },
-  { icon: Globe2, type: "Examples", title: "Campaign examples", description: "Illustrative campaign structures across email, LinkedIn, website identification, and paid media." },
-];
-
-const learningCards = [
-  { icon: Users, title: "Connect Post For Me", duration: "45 sec", action: "Connect Post For Me", guide: "Setup guide" },
-  { icon: Linkedin, title: "Connect HeyReach", duration: "40 sec", action: "Connect HeyReach", guide: "Connection guide" },
-  { icon: MonitorDot, title: "Install the website pixel", duration: "60 sec", action: "View installation steps", guide: "Developer guide" },
-  { icon: LayoutDashboard, title: "Review the GoHighLevel dashboard", duration: "45 sec", action: "Open dashboard", guide: "Dashboard guide" },
-  { icon: Plug, title: "Connect HubSpot or another CRM", duration: "60 sec", action: "Start CRM connection", guide: "CRM guide" },
-  { icon: BarChart3, title: "Understand the weekly engagement report", duration: "50 sec", action: "View report walkthrough", guide: "Reporting guide" },
-];
-
 const audiences = [
   {
     eyebrow: "Primary",
     title: "Growth-stage brands",
     body: "Get senior media execution and better audience inputs without building a large in-house buying operation.",
-    image: "/manus-storage/case-emerging_1bfb899c.jpg",
+    image: "/images/audience-growth.webp",
     alt: "A growing consumer brand team reviewing packaging and market data",
   },
   {
     eyebrow: "Multi-market",
     title: "Franchise & multi-location",
     body: "Coordinate national strategy and local activation with clear market-level visibility and fresher demand signals.",
-    image: "/manus-storage/case-franchise_f3c6b4a6.jpg",
-    alt: "A growth consultant reviewing a regional opportunity map",
+    image: "/images/audience-franchise.webp",
+    alt: "A team reviewing a regional market map",
   },
   {
     eyebrow: "Lean teams",
     title: "In-house marketing teams",
     body: "Add a dependable execution desk that works inside your strategy, systems, and reporting rhythm—not around them.",
-    image: "/manus-storage/case-agency_d2df0681.jpg",
-    alt: "An agency team collaborating around market analytics",
+    image: "/images/audience-inhouse.webp",
+    alt: "A marketing team collaborating around performance data",
   },
 ];
 
@@ -232,82 +191,35 @@ const faqs = [
   },
 ];
 
-function BrandMark({ variant }: { variant: LogoKey }) {
+function ArrowLink({ children, href }: { children: ReactNode; href: string }) {
+  const external = href.startsWith("http");
   return (
-    <span className="brand-mark" aria-hidden="true">
-      {variant === "orbit" && (
-        <svg viewBox="0 0 40 40" fill="none" className="size-full">
-          <circle cx="20" cy="20" r="11.25" stroke="currentColor" strokeWidth="1.4" strokeDasharray="25 8" />
-          <circle cx="20" cy="20" r="5.5" stroke="currentColor" strokeWidth="1.4" opacity=".65" />
-          <path d="M8 25.5c5.5-1 7.2-8.7 12.3-8.7 4.3 0 5.5 5.7 11.7 4.3" stroke="var(--signal)" strokeWidth="1.7" strokeLinecap="round" />
-          <circle cx="31.8" cy="21" r="2.15" fill="var(--electric)" />
-        </svg>
-      )}
-      {variant === "window" && (
-        <svg viewBox="0 0 40 40" fill="none" className="size-full">
-          <path d="M9.5 9.5h9v9h-9zM21.5 9.5h9v9h-9zM9.5 21.5h9v9h-9z" stroke="currentColor" strokeWidth="1.4" />
-          <path d="M21.5 21.5h9v9h-9z" fill="var(--electric)" />
-          <circle cx="26" cy="26" r="2.2" fill="var(--signal)" />
-        </svg>
-      )}
-      {variant === "monogram" && (
-        <svg viewBox="0 0 40 40" fill="none" className="size-full">
-          <path d="M9 29V11m0 9h5l5-9 5 18 4-9h3" stroke="currentColor" strokeWidth="2.35" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="31" cy="20" r="2.25" fill="var(--signal)" />
-        </svg>
-      )}
-    </span>
-  );
-}
-
-function Logo({ compact = false, variant = "orbit" }: { compact?: boolean; variant?: LogoKey }) {
-  return (
-    <a href="#top" className="group inline-flex items-center gap-3" aria-label="In Market Lab home">
-      <BrandMark variant={variant} />
-      <span className="leading-none">
-        <span className="brand-word block font-display text-[15px] tracking-[-0.02em]">IN MARKET</span>
-        {!compact && <span className="brand-sub mt-1 block font-mono text-[9px] tracking-[0.34em]">LAB</span>}
-      </span>
-    </a>
-  );
-}
-
-function ArrowLink({ children, href }: { children: React.ReactNode; href: string }) {
-  return (
-    <a className="arrow-link" href={href}>
+    <a className="arrow-link" href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined}>
       <span>{children}</span>
       <ArrowRight className="size-4" />
     </a>
   );
 }
 
-function ComingSoonButton({ children, variant = "primary" }: { children: React.ReactNode; variant?: "primary" | "secondary" }) {
-  return (
-    <button
-      type="button"
-      className={variant === "primary" ? "resource-action" : "resource-guide"}
-      onClick={() => toast.info("Coming soon", { description: "This resource is being prepared for the client library." })}
-    >
-      {children}
-    </button>
-  );
-}
-
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
-  const [alternateHero, setAlternateHero] = useState(false);
   const reducedMotion = useReducedMotion();
-  const heroMode: HeroWordMode = alternateHero ? "alternate" : "default";
-  const heroPrefix = alternateHero ? "Turn intent into" : "Move with";
-  const [announcedWord, setAnnouncedWord] = useState(HERO_WORD_SETS.default[0].word);
+  const [announcedWord, setAnnouncedWord] = useState<string>(HERO_WORDS[0].word);
 
-  const navItems = [
-    ["Model", "#method"],
-    ["Services", "#capabilities"],
-    ["Resources", "#materials"],
-    ["Learning", "#learning"],
-  ];
+  useEffect(() => {
+    document.title = "InMarketLab | Flat-Rate Media Execution";
+    const hash = window.location.hash;
+    if (!hash) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      window.setTimeout(() => {
+        document.getElementById(hash.slice(1))?.scrollIntoView();
+      }, 0);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   return (
     <div id="top" className="site-shell palette-daylight min-h-screen overflow-x-hidden">
@@ -322,7 +234,7 @@ export default function Home() {
             ))}
           </nav>
           <div className="hidden lg:block">
-            <a className="button button-small button-light" href={BOOKING_URL} target="_blank" rel="noreferrer" title={BOOKING_STATUS}>
+            <a className="button button-small button-light" href={BOOKING_URL} target="_blank" rel="noreferrer">
               Book a strategy session
               <ArrowRight className="size-4" />
             </a>
@@ -350,7 +262,7 @@ export default function Home() {
                   {label}
                 </a>
               ))}
-              <a className="button button-primary mt-6 justify-center" href={BOOKING_URL} target="_blank" rel="noreferrer" title={BOOKING_STATUS}>
+              <a className="button button-primary mt-6 justify-center" href={BOOKING_URL} target="_blank" rel="noreferrer">
                 Book a strategy session <ArrowRight className="size-4" />
               </a>
             </nav>
@@ -363,6 +275,7 @@ export default function Home() {
           <img
             src={hero.image}
             alt="A clear, sunlit view of market activity forming before it becomes crowded"
+            fetchPriority="high"
             className="absolute inset-0 size-full object-cover object-[65%_center]"
           />
           <div className="hero-vignette absolute inset-0" />
@@ -383,7 +296,7 @@ export default function Home() {
                   <span className="hero-title-line">{hero.lead}</span>
                   <span className="hero-title-line">
                     {heroPrefix}{" "}
-                    <HeroTypedWord mode={heroMode} reducedMotion={reducedMotion} onWord={setAnnouncedWord} />
+                    <HeroTypedWord reducedMotion={reducedMotion} onWord={setAnnouncedWord} />
                   </span>
                 </span>
               </h1>
@@ -391,7 +304,7 @@ export default function Home() {
                 {hero.body}
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <a className="button button-primary" href={BOOKING_URL} target="_blank" rel="noreferrer" title={BOOKING_STATUS}>
+                <a className="button button-primary" href={BOOKING_URL} target="_blank" rel="noreferrer">
                   Book a strategy session <ArrowRight className="size-4" />
                 </a>
                 <a className="button button-ghost" href="#capabilities">
@@ -435,36 +348,12 @@ export default function Home() {
           </div>
           <div className="hero-stats relative z-10 hidden border-t border-white/10 bg-[rgba(5,13,25,0.55)] backdrop-blur-md lg:block">
             <div className="container grid grid-cols-4 divide-x divide-white/10">
-              {["Flat-rate fee", "0% media markup", "Lists updated nightly", "Real-time reporting"].map((item, index) => {
-                const contents = (
-                  <>
-                    <span className="font-mono text-[9px] text-[var(--electric)]">0{index + 1}</span>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">{item}</span>
-                  </>
-                );
-
-                if (index === 3) {
-                  return (
-                    <button
-                      key={item}
-                      type="button"
-                      className="hero-secret-toggle flex items-center gap-3 py-5 pl-5 first:pl-0"
-                      aria-pressed={alternateHero}
-                      aria-label={alternateHero ? "Show original hero headline" : "Show alternate hero headline"}
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={() => setAlternateHero((value) => !value)}
-                    >
-                      {contents}
-                    </button>
-                  );
-                }
-
-                return (
-                  <div key={item} className="flex items-center gap-3 py-5 pl-5 first:pl-0">
-                    {contents}
-                  </div>
-                );
-              })}
+              {["Flat-rate fee", "0% media markup", "Lists updated nightly", "Real-time reporting"].map((item, index) => (
+                <div key={item} className="flex items-center gap-3 py-5 pl-5 first:pl-0">
+                  <span className="font-mono text-[9px] text-[var(--electric)]">0{index + 1}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">{item}</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -611,7 +500,7 @@ export default function Home() {
             <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
               <div>
                 <div className="section-label text-[var(--electric)]">Built for ambitious media teams</div>
-                <h2 className="section-title mt-6 max-w-3xl text-white">For brands that need execution - not another agency layer.</h2>
+                <h2 className="section-title mt-6 max-w-3xl text-white">For brands that need execution—not another agency layer.</h2>
               </div>
               <p className="max-w-sm text-sm leading-6 text-white/48">Designed for growth-stage brands, franchise systems, multi-location operators, and lean in-house marketing teams.</p>
             </div>
@@ -620,7 +509,7 @@ export default function Home() {
               {audiences.map((audience, index) => (
                 <article key={audience.title} className="audience-card group">
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <img src={audience.image} alt={audience.alt} className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.025]" />
+                    <img src={audience.image} alt={audience.alt} loading="lazy" decoding="async" className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.025]" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/85 via-transparent to-transparent" />
                     <span className="audience-badge absolute left-5 top-5 rounded-full border border-white/20 bg-[var(--ink)]/65 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-white/70 backdrop-blur-lg">
                       0{index + 1} / {audience.eyebrow}
@@ -637,76 +526,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="surface-paper py-24 md:py-32" id="materials">
-          <div className="container">
-            <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-              <div>
-                <div className="section-label text-[var(--cobalt)]">Marketing materials</div>
-                <h2 className="section-title mt-6 max-w-3xl">The story, ready to share.</h2>
-              </div>
-              <p className="max-w-md text-sm leading-7 text-[var(--ink)]/58">Downloadable one-sheets, presentations, methodology documents, and campaign examples for internal review or partner conversations.</p>
-            </div>
-            <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {materials.map((material) => {
-                const Icon = material.icon;
-                return (
-                  <article key={material.title} className="material-card">
-                    <div className="flex items-center justify-between">
-                      <span className="grid size-11 place-items-center rounded-xl bg-[var(--cobalt)]/8 text-[var(--cobalt)]"><Icon className="size-5" strokeWidth={1.7} /></span>
-                      <span className="coming-badge">Coming soon</span>
-                    </div>
-                    <p className="mt-10 font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--cobalt)]">{material.type}</p>
-                    <h3 className="mt-3 font-display text-2xl tracking-[-0.04em]">{material.title}</h3>
-                    <p className="mt-4 min-h-[96px] text-sm leading-6 text-[var(--ink)]/56">{material.description}</p>
-                    <div className="mt-6">
-                      <ComingSoonButton><Download className="size-4" /> Download</ComingSoonButton>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        <section className="learning-section py-24 md:py-32" id="learning">
-          <div className="container">
-            <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
-              <div>
-                <div className="section-label text-[var(--electric)]">Client learning center</div>
-                <h2 className="section-title mt-6 text-white">Get connected. Get moving.</h2>
-                <p className="mt-6 max-w-md text-base leading-7 text-white/52">Short, focused walkthroughs for the tools, connections, and reporting clients use most often.</p>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                {learningCards.map((card, index) => {
-                  const Icon = card.icon;
-                  return (
-                    <article key={card.title} className="learning-card">
-                      <div className="video-placeholder">
-                        <span className="video-play"><Video className="size-5" /></span>
-                        <span className="font-mono text-[9px] uppercase tracking-[0.16em]">Video · {card.duration}</span>
-                        <span className="absolute right-4 top-4 font-mono text-[9px] text-white/28">0{index + 1}</span>
-                      </div>
-                      <div className="p-6">
-                        <div className="flex items-start gap-3">
-                          <Icon className="mt-0.5 size-5 shrink-0 text-[var(--electric)]" strokeWidth={1.7} />
-                          <h3 className="font-display text-xl tracking-[-0.035em] text-white">{card.title}</h3>
-                        </div>
-                        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                          <ComingSoonButton>{card.action} <ArrowRight className="size-3.5" /></ComingSoonButton>
-                          <ComingSoonButton variant="secondary">{card.guide}</ComingSoonButton>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="surface-soft py-24 md:py-32">
+        <section className="surface-soft py-24 md:py-32" id="faq">
           <div className="container grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
-              <div>
+            <div>
               <div className="section-label text-[var(--cobalt)]">Straight answers</div>
               <h2 className="section-title mt-6">No markup. No mystery.</h2>
             </div>
@@ -748,35 +570,17 @@ export default function Home() {
                 Identify real demand. Turn it into measurable growth.
               </h2>
               <div className="mt-10 flex flex-col gap-5 md:flex-row md:items-center">
-                <a className="button button-light" href={BOOKING_URL} target="_blank" rel="noreferrer" title={BOOKING_STATUS}>
+                <a className="button button-light" href={BOOKING_URL} target="_blank" rel="noreferrer">
                   Book a strategy session <ArrowRight className="size-4" />
                 </a>
                 <p className="max-w-sm text-sm leading-6 text-white/62">We’ll look at where demand may already be forming, how your audiences are built, and how to connect intelligence to measurable activation.</p>
               </div>
-              <p className="calendar-verify mt-4 font-mono text-[9px] uppercase tracking-[0.14em]">Calendar URL · Verify</p>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="site-footer py-12">
-        <div className="container">
-          <div className="grid gap-10 border-b border-white/10 pb-10 md:grid-cols-[1fr_auto] md:items-start">
-            <div>
-              <Logo />
-              <p className="mt-5 max-w-sm text-sm leading-6 text-white/45">Flat-rate media execution powered by current buying signals, nightly audience updates, and real-time reporting.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-x-14 gap-y-3 text-sm text-white/58">
-              {navItems.map(([label, href]) => <a key={href} href={href} className="transition-colors hover:text-white">{label}</a>)}
-              <a href={BOOKING_URL} target="_blank" rel="noreferrer" title={BOOKING_STATUS} className="transition-colors hover:text-white">Strategy session</a>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3 pt-7 font-mono text-[9px] uppercase tracking-[0.16em] text-white/30 sm:flex-row sm:items-center sm:justify-between">
-            <span>In Market Lab · Intent data to media execution</span>
-            <span>© {new Date().getFullYear()} In Market Lab</span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
