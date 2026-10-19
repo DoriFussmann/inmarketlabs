@@ -18,7 +18,7 @@ export default function SiteFooter({ logoHref = "#top" }: { logoHref?: string })
           <div>
             <Logo href={logoHref} />
             <p className="mt-5 max-w-sm text-sm leading-6 text-white/45">
-              Flat-rate media execution powered by current buying signals, nightly audience updates, and real-time reporting.
+              Media execution powered by current buying signals, nightly audience updates, and real-time reporting.
             </p>
             <p className="mt-4 text-sm leading-6 text-white/45">
               Contact:{" "}

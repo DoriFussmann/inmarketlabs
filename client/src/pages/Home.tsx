@@ -170,14 +170,14 @@ const audiences = [
 
 const faqs = [
   {
-    question: "How does flat-rate pricing work?",
+    question: "How does pricing work?",
     answer:
-      "We agree on a fixed monthly operating fee based on scope, channels, and execution complexity. Your fee does not rise simply because media spend rises, so incentives stay aligned around performance and clarity.",
+      "You buy prepaid credits by card, and we run your campaigns from our ad accounts. A media management fee is added to each purchase and shown before you pay—no surprises on the invoice.",
   },
   {
-    question: "Do you mark up media spend?",
+    question: "Can I see where my budget goes?",
     answer:
-      "No. There is no percentage-of-spend media markup. Your media budget goes to media, and our operating fee is disclosed separately.",
+      "Yes. Real-time reporting shows spend by platform, placement, and campaign, so your team always knows what is running and why.",
   },
   {
     question: "How current are the high-intent lists?",
@@ -208,7 +208,7 @@ export default function Home() {
   const [announcedWord, setAnnouncedWord] = useState<string>(HERO_WORDS[0].word);
 
   useEffect(() => {
-    document.title = "InMarketLab | Flat-Rate Media Execution";
+    document.title = "InMarketLab | Signal-Driven Media Execution";
     const hash = window.location.hash;
     if (!hash) return;
 
@@ -342,13 +342,13 @@ export default function Home() {
                 </div>
               ))}
               <div className="flex items-center gap-2 px-5 py-4 font-mono text-[9px] uppercase tracking-[0.2em] text-white/40">
-                <span className="size-1.5 rounded-full bg-[var(--signal)]" /> No percentage-of-spend fee
+                <span className="size-1.5 rounded-full bg-[var(--signal)]" /> Real-time spend visibility
               </div>
             </motion.aside>
           </div>
           <div className="hero-stats relative z-10 hidden border-t border-white/10 bg-[rgba(5,13,25,0.55)] backdrop-blur-md lg:block">
             <div className="container grid grid-cols-4 divide-x divide-white/10">
-              {["Flat-rate fee", "0% media markup", "Lists updated nightly", "Real-time reporting"].map((item, index) => (
+              {["Buying-signal audiences", "Managed execution", "Lists updated nightly", "Real-time reporting"].map((item, index) => (
                 <div key={item} className="flex items-center gap-3 py-5 pl-5 first:pl-0">
                   <span className="font-mono text-[9px] text-[var(--electric)]">0{index + 1}</span>
                   <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">{item}</span>
@@ -362,20 +362,20 @@ export default function Home() {
           <div className="container">
             <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
               <div>
-                <div className="section-label text-[var(--cobalt)]">A different agency model</div>
+                <div className="section-label text-[var(--cobalt)]">How we work</div>
                 <div className="mt-8 h-px w-full bg-[var(--ink)]/12">
                   <div className="h-px w-1/3 bg-[var(--cobalt)]" />
                 </div>
               </div>
               <div>
-                <h2 className="section-title max-w-4xl">Media execution without the usual <em>conflict.</em></h2>
+                <h2 className="section-title max-w-4xl">Media execution built on live <em>signal.</em></h2>
                 <p className="mt-7 max-w-2xl text-lg leading-8 text-[var(--ink)]/62">
-                  Percentage-of-spend models reward agencies when budgets rise. We charge a clear operating fee, put media dollars into media, and give your team direct visibility into what is running and why.
+                  Most programs run on stale audiences and delayed reporting. We activate current buying signals, manage execution end to end, and give your team direct visibility into what is running and why.
                 </p>
                 <div className="mt-12 grid gap-px overflow-hidden rounded-2xl bg-[var(--ink)]/12 md:grid-cols-3">
                   {[
-                    ["FIXED", "Flat monthly scope", "One disclosed operating fee tied to the work—not a percentage of your media spend."],
-                    ["0%", "No media markup", "Your approved media budget goes to platforms and placements, not an agency margin."],
+                    ["MANAGED", "Hands-off execution", "We build, launch, and optimize campaigns from our ad accounts, so your team doesn't have to."],
+                    ["LIVE", "Full spend visibility", "See where every dollar runs, by platform and placement, in real-time reporting."],
                     ["24H", "Nightly list refresh", "High-intent and buying-signal audiences are updated every night for the next day’s execution."],
                   ].map(([value, title, body]) => (
                     <div key={title} className="insight-tile p-7">
@@ -530,7 +530,7 @@ export default function Home() {
           <div className="container grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
             <div>
               <div className="section-label text-[var(--cobalt)]">Straight answers</div>
-              <h2 className="section-title mt-6">No markup. No mystery.</h2>
+              <h2 className="section-title mt-6">Clear pricing. No mystery.</h2>
             </div>
             <div className="border-t border-[var(--ink)]/16">
               {faqs.map((faq, index) => {
