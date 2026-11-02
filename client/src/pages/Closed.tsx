@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { Link } from "wouter";
 import { BrandMark } from "@/components/Brand";
 
 export default function Closed() {
@@ -18,15 +17,6 @@ export default function Closed() {
           Thank you to every client and partner we worked with.
         </p>
       </main>
-      <footer className="pb-10 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--ink)]/40">
-        <Link href="/privacy" className="hover:text-[var(--ink)]">
-          Privacy Policy
-        </Link>
-        <span className="mx-3">·</span>
-        <Link href="/terms" className="hover:text-[var(--ink)]">
-          Terms of Use
-        </Link>
-      </footer>
     </div>
   );
 }
