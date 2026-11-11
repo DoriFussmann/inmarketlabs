@@ -8,7 +8,7 @@ export const navItems = [
   ["FAQ", "/#faq"],
 ] as const;
 
-const BOOKING_URL = "https://calendar.app.google/JcybaC5Sakrmxbb2A";
+const BOOKING_URL = "https://cal.com/dori-fussmann-lqbqlb/30min";
 
 export default function SiteFooter({ logoHref = "#top" }: { logoHref?: string }) {
   return (
