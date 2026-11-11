@@ -17,7 +17,7 @@ import {
 import SiteFooter, { navItems } from "@/components/SiteFooter";
 import { Logo } from "@/components/Brand";
 
-const BOOKING_URL = "https://calendar.app.google/JcybaC5Sakrmxbb2A";
+const BOOKING_URL = "https://cal.com/dori-fussmann-lqbqlb/30min";
 
 const hero = {
   eyebrow: "Audience intelligence + activation",
