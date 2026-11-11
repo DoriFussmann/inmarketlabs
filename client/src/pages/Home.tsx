@@ -22,7 +22,7 @@ const BOOKING_URL = "https://calendar.app.google/JcybaC5Sakrmxbb2A";
 const hero = {
   eyebrow: "Audience intelligence + activation",
   lead: "Know where demand is moving.",
-  body: "InMarketLab helps emerging brands find, understand, and reach qualified buyers sooner—combining market intelligence with coordinated media execution.",
+  body: "FranchiseReach helps emerging brands find, understand, and reach qualified buyers sooner—combining market intelligence with coordinated media execution.",
   image: "/images/hero.webp",
 };
 
@@ -208,7 +208,7 @@ export default function Home() {
   const [announcedWord, setAnnouncedWord] = useState<string>(HERO_WORDS[0].word);
 
   useEffect(() => {
-    document.title = "InMarketLab | Signal-Driven Media Execution";
+    document.title = "FranchiseReach | Signal-Driven Media Execution";
     const hash = window.location.hash;
     if (!hash) return;
 

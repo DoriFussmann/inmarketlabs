@@ -38,11 +38,11 @@ export function Logo({
   href?: string;
 }) {
   return (
-    <a href={href} className="group inline-flex items-center gap-3" aria-label="InMarketLab home">
+    <a href={href} className="group inline-flex items-center gap-3" aria-label="FranchiseReach home">
       <BrandMark variant={variant} />
       <span className="leading-none">
-        <span className="brand-word block font-display text-[15px] tracking-[-0.02em]">INMARKET</span>
-        {!compact && <span className="brand-sub mt-1 block font-mono text-[9px] tracking-[0.34em]">LAB</span>}
+        <span className="brand-word block font-display text-[15px] tracking-[-0.02em]">FRANCHISE</span>
+        {!compact && <span className="brand-sub mt-1 block font-mono text-[9px] tracking-[0.34em]">REACH</span>}
       </span>
     </a>
   );

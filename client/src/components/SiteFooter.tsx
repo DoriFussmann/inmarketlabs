@@ -22,8 +22,8 @@ export default function SiteFooter({ logoHref = "#top" }: { logoHref?: string })
             </p>
             <p className="mt-4 text-sm leading-6 text-white/45">
               Contact:{" "}
-              <a href="mailto:jon@inmarketlab.com" className="transition-colors hover:text-white">
-                jon@inmarketlab.com
+              <a href="mailto:jon@franreach.com" className="transition-colors hover:text-white">
+                jon@franreach.com
               </a>
             </p>
           </div>
@@ -45,7 +45,7 @@ export default function SiteFooter({ logoHref = "#top" }: { logoHref?: string })
           </div>
         </div>
         <div className="flex flex-col gap-3 pt-7 font-mono text-[9px] uppercase tracking-[0.16em] text-white/30 sm:flex-row sm:items-center sm:justify-between">
-          <span>InMarketLab · Intent data to media execution</span>
+          <span>FranchiseReach · Intent data to media execution</span>
           <span>© {new Date().getFullYear()} InMarketLabs, LLC</span>
         </div>
       </div>
