@@ -1,4 +1,4 @@
-# InMarketLab website
+# FranchiseReach website
 
 Vite + React SPA deployed on Vercel.
 

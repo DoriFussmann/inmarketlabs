@@ -26,8 +26,8 @@ class ErrorBoundary extends Component<Props, State> {
             <h1 className="section-title text-4xl">Something went wrong.</h1>
             <p className="mt-5 text-base leading-7 text-[var(--ink)]/62">
               Please reload the page. If the problem continues, email{" "}
-              <a href="mailto:jon@inmarketlab.com" className="underline underline-offset-4">
-                jon@inmarketlab.com
+              <a href="mailto:jon@franreach.com" className="underline underline-offset-4">
+                jon@franreach.com
               </a>
               .
             </p>
